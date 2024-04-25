@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Story Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Random Story Generator</h1>
+        <div class="input-section">
+            <div class="category">
+                <h2>Theme</h2>
+                <textarea id="themeInput" placeholder="Enter themes, one per line"></textarea>
+            </div>
+            <div class="category">
+                <h2>Character</h2>
+                <textarea id="characterInput" placeholder="Enter characters, one per line"></textarea>
+            </div>
+            <div class="category">
+                <h2>Setting</h2>
+                <textarea id="settingInput" placeholder="Enter settings, one per line"></textarea>
+            </div>
+            <div class="category">
+                <h2>Plot</h2>
+                <textarea id="plotInput" placeholder="Enter plots, one per line"></textarea>
+            </div>
+        </div>
+        <button onclick="generateStory()">Generate Story</button>
+        <div class="output-section">
+            <h2>Generated Story</h2>
+            <table>
+                <tr>
+                    <th>Theme</th>
+                    <th>Character</th>
+                    <th>Setting</th>
+                    <th>Plot</th>
+                </tr>
+                <tr>
+                    <td id="themeList"></td>
+                    <td id="characterList"></td>
+                    <td id="settingList"></td>
+                    <td id="plotList"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.category {
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+th {
+	width:150px;
+}
+
+td {
+	list-style-type: none;
+}
+
+li {
+height:50px;
+}
+
+textarea {
+	width:400px;
+	min-height:100px;
+}
+</style>
+
+<script>
+function generateStory() {
+    if (!validateTextarea("themeInput") || !validateTextarea("characterInput") || !validateTextarea("settingInput") || !validateTextarea("plotInput")) {
+        alert("Please enter at least 20 items in each category.");
+        return;
+    }
+    const themeInput = document.getElementById("themeInput").value.trim();
+    const characterInput = document.getElementById("characterInput").value.trim();
+    const settingInput = document.getElementById("settingInput").value.trim();
+    const plotInput = document.getElementById("plotInput").value.trim();
+
+    // Convert newline-separated strings to arrays
+    const themes = themeInput.split("\n").map(item => item.trim());
+    const characters = characterInput.split("\n").map(item => item.trim());
+    const settings = settingInput.split("\n").map(item => item.trim());
+    const plots = plotInput.split("\n").map(item => item.trim());
+
+    // Shuffle arrays
+    const shuffledThemes = shuffleArray(themes);
+    const shuffledCharacters = shuffleArray(characters);
+    const shuffledSettings = shuffleArray(settings);
+    const shuffledPlots = shuffleArray(plots);
+
+    // Display random items
+    displayItems("themeList", shuffledThemes);
+    displayItems("characterList", shuffledCharacters);
+    displayItems("settingList", shuffledSettings);
+    displayItems("plotList", shuffledPlots);
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function displayItems(listId, items) {
+    const list = document.getElementById(listId);
+    if (!list) {
+        console.error(`Element with ID ${listId} not found.`);
+        return;
+    }
+    list.innerHTML = "";
+    for (let i = 0; i < 5; i++) {
+        const item = document.createElement("li");
+        item.textContent = items[i] || ""; // Handle case where there are fewer than 5 items
+        list.appendChild(item);
+    }
+}
+
+function validateTextarea(textareaId) {
+    const textarea = document.getElementById(textareaId);
+    if (!textarea) {
+        console.error(`Textarea with ID ${textareaId} not found.`);
+        return false;
+    }
+    const lines = textarea.value.split("\n").filter(line => line.trim() !== ""); // Exclude empty lines
+    return lines.length >= 20;
+}
+</script>
